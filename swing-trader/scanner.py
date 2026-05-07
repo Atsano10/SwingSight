@@ -1,5 +1,6 @@
 import yfinance as yf
 import pandas as pd
+import importlib.metadata
 import pandas_ta as ta
 from config import watchlist, maShort, maLong, pullbackDays, accountBalance, riskPerTrade, minRewardRisk
 
