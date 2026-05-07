@@ -1,13 +1,18 @@
 import yfinance as yf
 import pandas as pd
+import requests_cache
 import importlib.metadata
 import pandas_ta as ta
 import time
 from config import watchlist, maShort, maLong, pullbackDays, accountBalance, riskPerTrade, minRewardRisk
 
+#Fixing rate limits
+session = requests_cache.CachedSession('yfinance.cache')
+session.headers['User-agent'] = 'my-program/1.0'
+
 #downloads data from given stock
 def getData(ticker):
-    df = yf.download(ticker, period = "1y", interval = "1d", progress = False, auto_adjust=False)
+    df = yf.download(ticker, period = "1y", interval = "1d", progress = False, auto_adjust=False, session=session)  
     df.columns = df.columns.get_level_values(0)
     df.dropna(inplace = True)
     return df
