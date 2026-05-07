@@ -46,7 +46,6 @@ def scanStocks():
 
     for ticker in watchlist:
         try:
-            time.sleep(0.5)
             df = getData(ticker)
             df = applyIndicators(df)
 
