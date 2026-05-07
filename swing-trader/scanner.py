@@ -1,19 +1,16 @@
 import yfinance as yf
 import pandas as pd
-import requests_cache
 import requests
-import importlib.metadata
 import pandas_ta as ta
-import time
 from config import watchlist, maShort, maLong, pullbackDays, accountBalance, riskPerTrade, minRewardRisk
 
-# 1. Setup a browser-like session (NO CACHE, to avoid saving errors)
+# Skips the limit restriction
 session = requests.Session()
 session.headers.update({
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 })
 
-# 2. BULK DOWNLOAD all at once (This avoids the rate limit entirely)
+# Download everything in watchlist at the same time
 print("Downloading data from Yahoo Finance...")
 bulk_data = yf.download(
     tickers=watchlist, 
@@ -24,6 +21,9 @@ bulk_data = yf.download(
     auto_adjust=False,
     session=session
 )
+if bulk_data.empty:
+    print("Failed to download data. Try again later.")
+    exit()
 
 #adds moving average columns 
 def applyIndicators(df):
@@ -60,8 +60,6 @@ def scanStocks():
 
     for ticker in watchlist:
         try:
-            # ---> THIS IS THE NEW WAY WE GET THE DATA <---
-            # We extract it from the bulk download instead of calling getData()
             if ticker in bulk_data.columns.levels[0]:
                 df = bulk_data[ticker].copy()
                 df.dropna(inplace=True)
@@ -82,9 +80,6 @@ def scanStocks():
             entryPrice = round(float(latest["Close"]),2)
             stopPrice = round(float(df["Low"].iloc[-pullbackDays:].min()), 2)
             riskPerShare = entryPrice - stopPrice
-            
-            if riskPerShare <= 0:
-                continue
                 
             targetPrice = round(entryPrice + (riskPerShare * minRewardRisk), 2)
             shares = calcPositionSize(entryPrice, stopPrice)
