@@ -10,7 +10,8 @@ watchlist = [
     "NVDA", "AMD", "JPM", "BAC", "GS",
     "XOM", "CVX", "UNH", "JNJ", "PFE",
     "TSLA", "F", "GM", "DIS", "NFLX",
-    "SPY", "COST", "QBTS", "SNDK",
+    "SPY", "COST", "QBTS", "SNDK", "AVGO",
+    "SNOW", 
 ]
 
 maShort = 50              # 50-day moving average
