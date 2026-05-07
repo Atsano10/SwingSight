@@ -1,21 +1,29 @@
 import yfinance as yf
 import pandas as pd
 import requests_cache
+import requests
 import importlib.metadata
 import pandas_ta as ta
 import time
 from config import watchlist, maShort, maLong, pullbackDays, accountBalance, riskPerTrade, minRewardRisk
 
-#Fixing rate limits
-session = requests_cache.CachedSession('yfinance.cache')
-session.headers['User-agent'] = 'my-program/1.0'
+# 1. Setup a browser-like session (NO CACHE, to avoid saving errors)
+session = requests.Session()
+session.headers.update({
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+})
 
-#downloads data from given stock
-def getData(ticker):
-    df = yf.download(ticker, period = "1y", interval = "1d", progress = False, auto_adjust=False, session=session)  
-    df.columns = df.columns.get_level_values(0)
-    df.dropna(inplace = True)
-    return df
+# 2. BULK DOWNLOAD all at once (This avoids the rate limit entirely)
+print("Downloading data from Yahoo Finance...")
+bulk_data = yf.download(
+    tickers=watchlist, 
+    period="1y", 
+    interval="1d", 
+    group_by="ticker", 
+    progress=False, 
+    auto_adjust=False,
+    session=session
+)
 
 #adds moving average columns 
 def applyIndicators(df):
@@ -46,7 +54,54 @@ def calcPositionSize(entryPrice, stopPrice):
     return round(shares,2)
 
 #scans watchlist for potential buys
+# scans watchlist for potential buys
 def scanStocks():
+    ideas = []
+
+    for ticker in watchlist:
+        try:
+            # ---> THIS IS THE NEW WAY WE GET THE DATA <---
+            # We extract it from the bulk download instead of calling getData()
+            if ticker in bulk_data.columns.levels[0]:
+                df = bulk_data[ticker].copy()
+                df.dropna(inplace=True)
+            else:
+                continue
+            
+            # Apply your exact same logic
+            df = applyIndicators(df)
+
+            if df.empty or len(df) < maLong:
+                continue
+            if not isUptrend(df):
+                continue
+            if not isPullback(df):
+                continue
+
+            latest = df.iloc[-1]
+            entryPrice = round(float(latest["Close"]),2)
+            stopPrice = round(float(df["Low"].iloc[-pullbackDays:].min()), 2)
+            riskPerShare = entryPrice - stopPrice
+            
+            if riskPerShare <= 0:
+                continue
+                
+            targetPrice = round(entryPrice + (riskPerShare * minRewardRisk), 2)
+            shares = calcPositionSize(entryPrice, stopPrice)
+
+            ideas.append({
+                "ticker": ticker,
+                "entry": entryPrice,
+                "stop": stopPrice,
+                "target": targetPrice,
+                "shares": shares,
+            })
+        
+        except Exception as e:
+            print(f"Error scanning {ticker}: {e}")
+            continue
+    
+    return pd.DataFrame(ideas)
     ideas = []
 
     for ticker in watchlist:
