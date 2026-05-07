@@ -11,7 +11,7 @@ watchlist = [
     "XOM", "CVX", "UNH", "JNJ", "PFE",
     "TSLA", "F", "GM", "DIS", "NFLX",
     "SPY", "COST", "QBTS", "SNDK", "AVGO",
-    "SNOW", "TSM", "NOK",
+    "SNOW", "TSM", "NOK", "VST",
 ]
 
 maShort = 50              # 50-day moving average
