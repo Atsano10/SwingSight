@@ -1,5 +1,6 @@
 import yfinance as yf
 import pandas as pd
+import pandas_ta as ta
 from config import watchlist, maShort, maLong, pullbackDays, accountBalance, riskPerTrade, minRewardRisk
 
 #downloads data from given stock
@@ -20,7 +21,7 @@ def isUptrend(df):
     latest = df.iloc[-1]
     return(
         latest["Close"] > latest[f"ma{maShort}"] and
-        latest["Close"] > latest[f"ma{maLong}"]
+        latest[f"ma{maShort}"] > latest[f"ma{maLong}"]
     )
 
 #checks if the stock has been declining over the last 7 days.
