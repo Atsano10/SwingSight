@@ -2,6 +2,7 @@ import yfinance as yf
 import pandas as pd
 import importlib.metadata
 import pandas_ta as ta
+import time
 from config import watchlist, maShort, maLong, pullbackDays, accountBalance, riskPerTrade, minRewardRisk
 
 #downloads data from given stock
@@ -45,6 +46,7 @@ def scanStocks():
 
     for ticker in watchlist:
         try:
+            time.sleep(0.5)
             df = getData(ticker)
             df = applyIndicators(df)
 
