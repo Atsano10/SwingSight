@@ -6,7 +6,7 @@ from config import watchlist, maShort, maLong, pullbackDays, accountBalance, ris
 
 #downloads data from given stock
 def getData(ticker):
-    df = yf.download(ticker, period = "1y", interval = "1d", progress = False)
+    df = yf.download(ticker, period = "1y", interval = "1d", progress = False, auto_adjust=False)
     df.columns = df.columns.get_level_values(0)
     df.dropna(inplace = True)
     return df
