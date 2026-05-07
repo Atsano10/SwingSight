@@ -102,40 +102,6 @@ def scanStocks():
             continue
     
     return pd.DataFrame(ideas)
-    ideas = []
-
-    for ticker in watchlist:
-        try:
-            df = getData(ticker)
-            df = applyIndicators(df)
-
-            if df.empty or len(df) < maLong:
-                continue
-            if not isUptrend(df):
-                continue
-            if not isPullback(df):
-                continue
-
-            latest = df.iloc[-1]
-            entryPrice = round(float(latest["Close"]),2)
-            stopPrice = round(float(df["Low"].iloc[-pullbackDays:].min()), 2)
-            riskPerShare = entryPrice - stopPrice
-            targetPrice = round(entryPrice + (riskPerShare * minRewardRisk), 2)
-            shares = calcPositionSize(entryPrice, stopPrice)
-
-            ideas.append({
-                "ticker": ticker,
-                "entry": entryPrice,
-                "stop": stopPrice,
-                "target": targetPrice,
-                "shares": shares,
-            })
-        
-        except Exception as e:
-            print(f"Error scanning {ticker}: {e}")
-            continue
-    
-    return pd.DataFrame(ideas)
 
 results = scanStocks()
 if results.empty:
