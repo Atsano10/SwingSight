@@ -58,7 +58,6 @@ def scanStocks():
             else:
                 continue
             
-            # Apply your exact same logic
             df = applyIndicators(df)
 
             if df.empty or len(df) < maLong:
