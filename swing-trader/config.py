@@ -7,8 +7,7 @@ maxOpenTrades = 5        # Max trades at once
 
 watchlist = [
     "AAPL", "MSFT", "GOOGL", "AMZN", "META",
-    "NVDA", "AMD", "XOM", "CVX", "UNH",
-    "JNJ", "PFE","TSLA", "F", "GM",
+    "NVDA", "AMD", "XOM", "CVX", "TSLA",
     "DIS", "NFLX","SPY", "COST", "QBTS",
     "SNDK", "AVGO","SNOW", "TSM", "NOK",
     "VST",
