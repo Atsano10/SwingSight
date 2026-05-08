@@ -1,2 +1,2 @@
-# Put-Calls
+# SwingSight
 Trading analyzing for potential swing trades.
