@@ -7,11 +7,11 @@ maxOpenTrades = 5        # Max trades at once
 
 watchlist = [
     "AAPL", "MSFT", "GOOGL", "AMZN", "META",
-    "NVDA", "AMD", "JPM", "BAC", "GS",
-    "XOM", "CVX", "UNH", "JNJ", "PFE",
-    "TSLA", "F", "GM", "DIS", "NFLX",
-    "SPY", "COST", "QBTS", "SNDK", "AVGO",
-    "SNOW", "TSM", "NOK", "VST",
+    "NVDA", "AMD", "XOM", "CVX", "UNH",
+    "JNJ", "PFE","TSLA", "F", "GM",
+    "DIS", "NFLX","SPY", "COST", "QBTS",
+    "SNDK", "AVGO","SNOW", "TSM", "NOK",
+    "VST",
 ]
 
 maShort = 50              # 50-day moving average
