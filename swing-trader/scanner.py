@@ -4,12 +4,6 @@ import requests
 import pandas_ta as ta
 from config import watchlist, maShort, maLong, pullbackDays, accountBalance, riskPerTrade, minRewardRisk
 
-# Skips the limit restriction
-session = requests.Session()
-session.headers.update({
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
-})
-
 # Download everything in watchlist at the same time
 print("Downloading data from Yahoo Finance...")
 bulk_data = yf.download(
@@ -19,7 +13,6 @@ bulk_data = yf.download(
     group_by="ticker", 
     progress=False, 
     auto_adjust=False,
-    session=session
 )
 if bulk_data.empty:
     print("Failed to download data. Try again later.")
