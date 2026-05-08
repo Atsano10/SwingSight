@@ -45,7 +45,6 @@ def calcPositionSize(entryPrice, stopPrice):
     shares  = riskAmount / riskPerShare
     return round(shares,2)
 
-#scans watchlist for potential buys
 # scans watchlist for potential buys
 def scanStocks():
     ideas = []
