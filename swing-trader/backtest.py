@@ -1,7 +1,7 @@
 import yfinance as yf
 import pandas as pd
 import pandas_ta as ta
-from backtestConfig import watchlist, maShort, maLong, pullbackDays, accountBalance, riskPerTrade, minRewardRisk, monthsBack, tradeExpirationDays
+from backtestConfig import watchlist, maShort, maLong, pullbackDays, accountBalance, riskPerTrade, minRewardRisk, monthsBack, tradeExpirationDays, startMonthsBack, endMonthsBack
 
 # Download everything in watchlist at the same time
 print("Downloading data from Yahoo Finance...")
