@@ -17,3 +17,6 @@ pullbackDays = 7          # Max days of pullback to consider
 
 monthsBack = 5            # How far before we check our data
 tradeExpirationDays = 21  # After how long the trade expires
+
+startMonthsBack = 5      # Starts testing from 5 months ago
+endMonthsBack = 0        # End at present time

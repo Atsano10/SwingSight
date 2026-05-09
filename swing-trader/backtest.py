@@ -20,6 +20,7 @@ if bulk_data.empty:
 # sets the backtesting time
 pretendScanDate = pd.Timestamp.today() - pd.DateOffset(months=monthsBack)
 
+currentMonthsBack = monthsBack
 
 #adds moving average columns 
 def applyIndicators(df):
@@ -82,6 +83,7 @@ def scanStocks():
             shares = calcPositionSize(entryPrice, stopPrice)
 
             ideas.append({
+                "monthsBack": currentMonthsBack,
                 "ticker": ticker,
                 "entryDate": latest.name.date(),
                 "entry": entryPrice,
@@ -108,7 +110,7 @@ def checkTradeOutcome(ticker, trade):
         return {
             "exitDate": None,
             "exitPrice": None,
-            "outcome": "NO DATA",
+            "outcome": "OPEN",
             "profitLoss": 0,
         }
 
@@ -126,6 +128,14 @@ def checkTradeOutcome(ticker, trade):
             outcome = "WIN"
             break
     else:
+        if len(future) < tradeExpirationDays:
+            return {
+                "exitDate": None,
+                "exitPrice": None,
+                "outcome": "OPEN",
+                "profitLoss": 0,
+            }
+
         lastCandle = future.iloc[-1]
         date = future.index[-1]
         exitPrice = float(lastCandle["Close"])
@@ -141,16 +151,42 @@ def checkTradeOutcome(ticker, trade):
     }
 
 
-results = scanStocks()
+allCompletedTrades = []
+
+for testMonthsBack in range(startMonthsBack, endMonthsBack - 1, -1):
+    currentMonthsBack = testMonthsBack
+    pretendScanDate = pd.Timestamp.today() - pd.DateOffset(months=testMonthsBack)
+
+    print()
+    print(f"Testing scan from {testMonthsBack} months back: {pretendScanDate.date()}")
+
+    results = scanStocks()
+
+    if results.empty:
+        print("No backtest trade ideas found.")
+    else:
+        for trade in results.to_dict("records"):
+            outcome = checkTradeOutcome(trade["ticker"], trade)
+            allCompletedTrades.append({**trade, **outcome})
+
+results = pd.DataFrame(allCompletedTrades)
 
 if results.empty:
     print("No backtest trade ideas found.")
 else:
-    completedTrades = []
-
-    for trade in results.to_dict("records"):
-        outcome = checkTradeOutcome(trade["ticker"], trade)
-        completedTrades.append({**trade, **outcome})
-
-    results = pd.DataFrame(completedTrades)
+    print()
     print(results.to_string(index=False))
+
+    wins = len(results[results["outcome"] == "WIN"])
+    losses = len(results[results["outcome"] == "LOSS"])
+    expired = len(results[results["outcome"] == "EXPIRED"])
+    openTrades = len(results[results["outcome"] == "OPEN"])
+    totalProfitLoss = round(results["profitLoss"].sum(), 2)
+
+    print()
+    print("Backtest summary")
+    print(f"Wins: {wins}")
+    print(f"Losses: {losses}")
+    print(f"Expired: {expired}")
+    print(f"Open: {openTrades}")
+    print(f"Total P/L: ${totalProfitLoss}")
