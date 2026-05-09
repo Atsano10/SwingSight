@@ -1,4 +1,4 @@
-# Holds temporary account data for paper trade simulation.
+# Holds actual account data.
 
 accountBalance = 2000       
 riskPerTrade = 0.05      # 1% max risk per trade 
