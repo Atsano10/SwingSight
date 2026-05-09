@@ -2,7 +2,7 @@
 
 accountBalance = 10000       
 riskPerTrade = 0.05      # 5% max risk per trade 
-minRewardRisk = 2.0      # 2:1 reward/risk ratio
+minRewardRisk = 1.0      # 2:1 reward/risk ratio
 maxOpenTrades = 5        # Max trades at once
 
 watchlist = [
