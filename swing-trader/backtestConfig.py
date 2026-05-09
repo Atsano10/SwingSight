@@ -6,8 +6,10 @@ minRewardRisk = 2.0      # 2:1 reward/risk ratio
 maxOpenTrades = 5        # Max trades at once
 
 watchlist = [
-    "NVDA", "TSLA", "COST", 
-    "QBTS", "SNOW",  "NOK", 
+    "AAPL", "MSFT", "GOOGL", "AMZN", "META",
+    "NVDA", "AMD", "XOM", "CVX", "TSLA",
+    "DIS", "NFLX","SPY", "COST", "QBTS",
+    "SNDK", "AVGO","SNOW", "TSM", "NOK",
     "VST",
 ]
 
