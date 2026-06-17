@@ -1,192 +1,151 @@
 import yfinance as yf
 import pandas as pd
-import pandas_ta as ta
-from backtestConfig import watchlist, maShort, maLong, pullbackDays, accountBalance, riskPerTrade, minRewardRisk, monthsBack, tradeExpirationDays, startMonthsBack, endMonthsBack
-
-# Download everything in watchlist at the same time
-print("Downloading data from Yahoo Finance...")
-bulk_data = yf.download(
-    tickers=watchlist, 
-    period="2y", 
-    interval="1d", 
-    group_by="ticker", 
-    progress=False, 
-    auto_adjust=False,
+from backtestConfig import (
+    watchlist, maShort, maLong, pullbackDays,
+    accountBalance, riskPerTrade, minRewardRisk,
+    tradeExpirationDays, startMonthsBack, endMonthsBack,
 )
-if bulk_data.empty:
-    print("Failed to download data. Try again later.")
-    exit()
 
-# sets the backtesting time
-pretendScanDate = pd.Timestamp.today() - pd.DateOffset(months=monthsBack)
 
-currentMonthsBack = monthsBack
-
-#adds moving average columns 
-def applyIndicators(df):
-    df[f"ma{maShort}"] = df["Close"].rolling(window = maShort).mean()
-    df[f"ma{maLong}"] = df["Close"].rolling(window = maLong).mean()
+def _apply_indicators(df):
+    df[f"ma{maShort}"] = df["Close"].rolling(window=maShort).mean()
+    df[f"ma{maLong}"] = df["Close"].rolling(window=maLong).mean()
     return df
 
-#checks if the most recent day is above the 50 and 200 day moving average
-def isUptrend(df):
+
+def _is_uptrend(df):
     latest = df.iloc[-1]
-    return(
+    return (
         latest["Close"] > latest[f"ma{maShort}"] and
         latest[f"ma{maShort}"] > latest[f"ma{maLong}"]
     )
 
-#checks if the stock has been declining over the last 7 days.
-def isPullback(df):
+
+def _is_pullback(df):
     recent = df["Close"].iloc[-pullbackDays:]
     return recent.iloc[-1] < recent.iloc[0]
 
-#calculates a good buying shares size.
-def calcPositionSize(entryPrice, stopPrice):
-    riskAmount = accountBalance * riskPerTrade
-    riskPerShare = entryPrice - stopPrice
-    if riskPerShare <= 0:
+
+def _calc_position_size(entry_price, stop_price):
+    risk_amount = accountBalance * riskPerTrade
+    risk_per_share = entry_price - stop_price
+    if risk_per_share <= 0:
         return 0
-    shares  = riskAmount / riskPerShare
-    return round(shares,2)
+    return round(risk_amount / risk_per_share, 2)
 
-# scans watchlist for potential buys
-def scanStocks():
+
+def _scan_at_date(bulk_data, scan_date, months_back):
     ideas = []
-
     for ticker in watchlist:
         try:
-            if ticker in bulk_data.columns.levels[0]:
-                df = bulk_data[ticker].copy()
-                df.dropna(inplace=True)
-                df = df[df.index <= pretendScanDate].copy()
-            else:
+            if ticker not in bulk_data.columns.get_level_values(0):
                 continue
-            
+            df = bulk_data[ticker].copy()
+            df.dropna(inplace=True)
+            df = df[df.index <= scan_date].copy()
             if df.empty or len(df) < maLong:
                 continue
-
-            df = applyIndicators(df)
+            df = _apply_indicators(df)
             df.dropna(inplace=True)
-
-            if not isUptrend(df):
+            if not _is_uptrend(df):
                 continue
-            if not isPullback(df):
+            if not _is_pullback(df):
                 continue
 
             latest = df.iloc[-1]
-            entryPrice = round(float(latest["Close"]),2)
-            stopPrice = round(float(df["Low"].iloc[-pullbackDays:].min()), 2)
-            riskPerShare = entryPrice - stopPrice
-                
-            targetPrice = round(entryPrice + (riskPerShare * minRewardRisk), 2)
-            shares = calcPositionSize(entryPrice, stopPrice)
+            entry = round(float(latest["Close"]), 2)
+            stop = round(float(df["Low"].iloc[-pullbackDays:].min()), 2)
+            risk_per_share = entry - stop
+            target = round(entry + (risk_per_share * minRewardRisk), 2)
+            shares = _calc_position_size(entry, stop)
 
             ideas.append({
-                "monthsBack": currentMonthsBack,
+                "monthsBack": months_back,
                 "ticker": ticker,
-                "entryDate": latest.name.date(),
-                "entry": entryPrice,
-                "stop": stopPrice,
-                "target": targetPrice,
+                "entryDate": str(latest.name.date()),
+                "entry": entry,
+                "stop": stop,
+                "target": target,
                 "shares": shares,
             })
-        
         except Exception as e:
             print(f"Error scanning {ticker}: {e}")
-            continue
-    
-    return pd.DataFrame(ideas)
+    return ideas
 
-#sets the outcomes for each trade
-def checkTradeOutcome(ticker, trade):
+
+def _check_outcome(bulk_data, ticker, trade):
     df = bulk_data[ticker].copy()
     df.dropna(inplace=True)
 
-    entryDate = pd.Timestamp(trade["entryDate"])
-    future = df[df.index > entryDate].head(tradeExpirationDays)
+    entry_date = pd.Timestamp(trade["entryDate"])
+    future = df[df.index > entry_date].head(tradeExpirationDays)
 
     if future.empty:
-        return {
-            "exitDate": None,
-            "exitPrice": None,
-            "outcome": "OPEN",
-            "profitLoss": 0,
-        }
+        return {"exitDate": None, "exitPrice": None, "outcome": "OPEN", "profitLoss": 0}
 
     for date, candle in future.iterrows():
-        hitStop = candle["Low"] <= trade["stop"]
-        hitTarget = candle["High"] >= trade["target"]
-
-        if hitStop:
-            exitPrice = trade["stop"]
+        if candle["Low"] <= trade["stop"]:
+            exit_price = trade["stop"]
             outcome = "LOSS"
             break
-
-        if hitTarget:
-            exitPrice = trade["target"]
+        if candle["High"] >= trade["target"]:
+            exit_price = trade["target"]
             outcome = "WIN"
             break
     else:
         if len(future) < tradeExpirationDays:
-            return {
-                "exitDate": None,
-                "exitPrice": None,
-                "outcome": "OPEN",
-                "profitLoss": 0,
-            }
-
-        lastCandle = future.iloc[-1]
+            return {"exitDate": None, "exitPrice": None, "outcome": "OPEN", "profitLoss": 0}
+        last = future.iloc[-1]
         date = future.index[-1]
-        exitPrice = float(lastCandle["Close"])
+        exit_price = float(last["Close"])
         outcome = "EXPIRED"
 
-    profitLoss = (exitPrice - trade["entry"]) * trade["shares"]
-
+    profit_loss = (exit_price - trade["entry"]) * trade["shares"]
     return {
-        "exitDate": date.date(),
-        "exitPrice": round(exitPrice, 2),
+        "exitDate": str(date.date()),
+        "exitPrice": round(exit_price, 2),
         "outcome": outcome,
-        "profitLoss": round(profitLoss, 2),
+        "profitLoss": round(profit_loss, 2),
     }
 
 
-allCompletedTrades = []
+def run_backtest():
+    print("Downloading data from Yahoo Finance...")
+    bulk_data = yf.download(
+        tickers=watchlist,
+        period="2y",
+        interval="1d",
+        group_by="ticker",
+        progress=False,
+        auto_adjust=False,
+    )
+    if bulk_data.empty:
+        return []
 
-for testMonthsBack in range(startMonthsBack, endMonthsBack - 1, -1):
-    currentMonthsBack = testMonthsBack
-    pretendScanDate = pd.Timestamp.today() - pd.DateOffset(months=testMonthsBack)
+    all_trades = []
+    for months_back in range(startMonthsBack, endMonthsBack - 1, -1):
+        scan_date = pd.Timestamp.today() - pd.DateOffset(months=months_back)
+        print(f"Testing scan from {months_back} months back: {scan_date.date()}")
+        ideas = _scan_at_date(bulk_data, scan_date, months_back)
+        for trade in ideas:
+            outcome = _check_outcome(bulk_data, trade["ticker"], trade)
+            all_trades.append({**trade, **outcome})
 
-    print()
-    print(f"Testing scan from {testMonthsBack} months back: {pretendScanDate.date()}")
+    return all_trades
 
-    results = scanStocks()
 
-    if results.empty:
-        print("No backtest trade ideas found.")
+if __name__ == "__main__":
+    results = run_backtest()
+    if not results:
+        print("No backtest results found.")
     else:
-        for trade in results.to_dict("records"):
-            outcome = checkTradeOutcome(trade["ticker"], trade)
-            allCompletedTrades.append({**trade, **outcome})
-
-results = pd.DataFrame(allCompletedTrades)
-
-if results.empty:
-    print("No backtest trade ideas found.")
-else:
-    print()
-    print(results.to_string(index=False))
-
-    wins = len(results[results["outcome"] == "WIN"])
-    losses = len(results[results["outcome"] == "LOSS"])
-    expired = len(results[results["outcome"] == "EXPIRED"])
-    openTrades = len(results[results["outcome"] == "OPEN"])
-    totalProfitLoss = round(results["profitLoss"].sum(), 2)
-
-    print()
-    print("Backtest summary")
-    print(f"Wins: {wins}")
-    print(f"Losses: {losses}")
-    print(f"Expired: {expired}")
-    print(f"Open: {openTrades}")
-    print(f"Total P/L: ${totalProfitLoss}")
+        df = pd.DataFrame(results)
+        print(df.to_string(index=False))
+        wins = len(df[df["outcome"] == "WIN"])
+        losses = len(df[df["outcome"] == "LOSS"])
+        expired = len(df[df["outcome"] == "EXPIRED"])
+        open_t = len(df[df["outcome"] == "OPEN"])
+        total_pl = round(df["profitLoss"].sum(), 2)
+        print(f"\nBacktest summary")
+        print(f"Wins: {wins}  Losses: {losses}  Expired: {expired}  Open: {open_t}")
+        print(f"Total P/L: ${total_pl}")
