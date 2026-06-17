@@ -1,4 +1,5 @@
 import {BrowserRouter, Routes, Route, NavLink} from 'react-router-dom'
+import LiveAnalysis from './pages/liveAnalysis'
 
 export default function App(){
     return(
@@ -13,8 +14,8 @@ export default function App(){
 
             <main>
                 <Routes>
-                    <Route path = "/signals" element = {<h2>Live Analysis Page</h2>} />
-                    <Route path = "/backtesting" element = {<h2>Back Testing Page</h2>} />
+                    <Route path = "/signals" element = {<LiveAnalysis/>} />
+                    <Route path = "/backtesting" element = {<backTesting/>} />
                 </Routes>
             </main>
         </BrowserRouter>
