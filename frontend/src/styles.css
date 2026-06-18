@@ -125,13 +125,41 @@ main {
     background: rgba(180, 130, 255, 0.9);
 }
 
+/* tradeTable Styles*/
+
 .signal{
     background-color: #252540;
     border: 1px solid #3a3a5c;
-    padding: 20px;
+    padding: 16px 20px;
     border-radius: 12px;
     color: white;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    height: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.signalTicker {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    min-width: 48px;
+}
+
+.signalField {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.signalLabel {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.signalValue {
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
 }
