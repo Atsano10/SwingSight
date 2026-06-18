@@ -1,5 +1,7 @@
 import {BrowserRouter, Routes, Route, NavLink} from 'react-router-dom'
-import LiveAnalysis from './pages/liveAnalysis'
+import BackTesting from './pages/backTesting.jsx'
+import LiveAnalysis from './pages/liveAnalysis.jsx'
+import Home from './pages/home.jsx'
 
 export default function App(){
     return(
@@ -14,8 +16,9 @@ export default function App(){
 
             <main>
                 <Routes>
-                    <Route path = "/signals" element = {<LiveAnalysis/>} />
-                    <Route path = "/backtesting" element = {<LiveAnalysis/>} />
+                    <Route path="/" element={<Home/>} />
+                    <Route path = "/signals" element = {<LiveAnalysis />} />
+                    <Route path = "/backtesting" element = {<BackTesting />} />
                 </Routes>
             </main>
         </BrowserRouter>
