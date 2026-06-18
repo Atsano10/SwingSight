@@ -4,7 +4,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0px 200px 0px 48px;
+    padding: 0px 48px;
     gap: 40px;
     border-bottom: 2px solid rgb(115, 115, 115);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
@@ -18,13 +18,11 @@
     letter-spacing: 3px;
     font-weight: 700;
     flex-shrink: 0;
-    padding-right: 200px;
-    padding-left: 130px;
 }
 
 .navButtons{
     display: flex;
-    gap: 300px;
+    gap: 32px;
     align-items: center;
     flex-shrink: 0;
 }
@@ -135,7 +133,9 @@ main {
     color: white;
     display: flex;
     align-items: center;
-    gap: 32px;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .signalTicker {
@@ -162,4 +162,164 @@ main {
     font-size: 14px;
     color: white;
     font-weight: 500;
+}
+
+/* Navbar logout button */
+
+.logoutButton {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.75);
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logoutButton:hover {
+    color: white;
+    border-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Auth Pages */
+
+.authPage {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.authCard {
+    background-color: #1a1a2e;
+    border: 1px solid #3a3a5c;
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.authTitle {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 28px 0;
+}
+
+.authForm {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.authInput {
+    background-color: #252540;
+    border: 1px solid #3a3a5c;
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: white;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.authInput::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.authInput:focus {
+    border-color: rgba(180, 130, 255, 0.7);
+}
+
+.authButton {
+    background: linear-gradient(135deg, rgb(68, 13, 139), rgb(88, 20, 160));
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: opacity 0.2s ease;
+}
+
+.authButton:hover {
+    opacity: 0.85;
+}
+
+.authButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.authError {
+    color: rgba(255, 100, 100, 0.9);
+    font-size: 13px;
+    margin: 0;
+}
+
+.authSwitch {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 13px;
+    text-align: center;
+    margin: 20px 0 0 0;
+}
+
+.authSwitch a {
+    color: rgba(180, 130, 255, 0.9);
+    text-decoration: none;
+}
+
+.authSwitch a:hover {
+    text-decoration: underline;
+}
+
+/* Settings Page */
+
+.settingsPage {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 60px;
+}
+
+.settingsCard {
+    background-color: #1a1a2e;
+    border: 1px solid #3a3a5c;
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 500px;
+    height: fit-content;
+}
+
+.settingsTitle {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 28px 0;
+}
+
+.settingsSection {
+    border-top: 1px solid #3a3a5c;
+    padding: 16px 0;
+}
+
+.settingsLabel {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 6px 0;
+}
+
+.settingsValue {
+    font-size: 14px;
+    color: white;
+    margin: 0;
 }
