@@ -1,5 +1,29 @@
-// Login page — a centered form with email and password inputs
-// On submit, call supabase.auth.signInWithPassword({ email, password })
-// If there's an error, display it below the form
-// On success, navigate to /signals using useNavigate
-// Include a link to /signup for users without an account
+export default function LogIn(){
+    return(
+        <div>
+            <div className = 'logInPanel'>
+                <div className = 'infoPanel'>
+                    <div>SwingSight</div>
+                    <h1>Analyze swing trades.</h1>
+                    <p>Bla bla bla bla bla bla bla bla</p>
+                </div>
+                <div className = 'formPanel'>
+                    <div>Welcome Back</div>
+                    <div className = 'formContainer'>
+                        <p>Log in to your account</p>
+                        <div>
+                            <label>Email</label>
+                            <input type="email" id = 'email' placeholder="Your username" required/>
+                        </div>
+                        <div>
+                            <label htmlFor="password">Password</label>
+                            <input type="password" id = "password" placeholder="Your password" required/>
+                        </div>
+                    </div>
+                    <button >Log In</button>
+                    <div className="breaker"><span>or</span></div>
+                </div>
+            </div>    
+        </div>
+    )
+}

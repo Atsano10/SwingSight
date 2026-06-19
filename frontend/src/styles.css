@@ -1,4 +1,5 @@
 /* Navigation Bar Styles */
+
 .navbar{
     background: linear-gradient(135deg, rgb(68, 13, 139), rgb(88, 20, 160));
     display: flex;
@@ -101,6 +102,7 @@ main {
 }
 
 /* Panel Styles*/
+
 .sidePanel {
     position: fixed;
     top: 0;
@@ -248,7 +250,7 @@ main {
     background: rgba(180, 130, 255, 0.9);
 }
 
-/* tradeTable Styles*/
+/* tradeTable Styles */
 
 .signal{
     background-color: #252540;
@@ -287,4 +289,39 @@ main {
     font-size: 14px;
     color: white;
     font-weight: 500;
+}
+
+/* LogIn Styles */
+
+.logInPanel {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr;
+    height: 100vh;
+}
+
+.infoPanel {
+    background-color: #3a3a4a;
+    color: white;
+    padding: 40px;
+}
+
+.formPanel {
+    background-color: #2a2a38;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.formContainer {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.breaker {
+    text-align: center;
+    color: #aaa;
+    margin-top: 16px;
 }
