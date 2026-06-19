@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {BrowserRouter, Routes, Route, NavLink} from 'react-router-dom'
 import BackTesting from './pages/backTesting.jsx'
 import LiveAnalysis from './pages/liveAnalysis.jsx'
+import Settings from './pages/settings.jsx'
 
 export default function App(){
     const [isOpen, setIsOpen] = useState(false)
@@ -22,6 +23,7 @@ export default function App(){
                 </div>
                 <NavLink className = 'sideLink' to="/signals" onClick = {() => setIsOpen(false)}>Signals</NavLink>
                 <NavLink className = 'sideLink' to = "/backtesting" onClick = {() => setIsOpen(false)}>BackTest</NavLink>
+                <NavLink className = 'sideLink' to = "/settings" onClick = {() => setIsOpen(false)}>Settings</NavLink>
                 <button className = 'logOut'>Log Out</button>
             </div>
             <main>
