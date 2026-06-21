@@ -18,6 +18,10 @@ export default function SignUp(){
         }else alert ("Passwords do not match.")
     }
 
+    async function handleGoogleLogin() {
+        await supabase.auth.signInWithOAuth({ provider: 'google' })
+    }
+
 
     return(
         <div className='loginWrapper'>
@@ -50,7 +54,7 @@ export default function SignUp(){
                     <button className='mainButton' onClick = {handleSignUp} >Sign Up</button>
                     <div className="breaker"><span>or</span></div>
                     <button className='subButtons' onClick = {() => navigate('/login')}>Log In</button>
-                    <button className='subButtons'><FcGoogle size={18} /></button>
+                    <button className='subButtons' onClick={handleGoogleLogin} ><FcGoogle size={18} /></button>
                 </div>
             </div>
         </div>

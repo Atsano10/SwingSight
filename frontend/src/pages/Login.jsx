@@ -15,6 +15,9 @@ export default function LogIn(){
             navigate('/signals')
     }
 
+    async function handleGoogleLogin() {
+        await supabase.auth.signInWithOAuth({ provider: 'google' })
+    }
 
     return(
         <div className='loginWrapper'>
@@ -42,7 +45,7 @@ export default function LogIn(){
                     <button className='mainButton' onClick = {handleLogin}>Log In</button>
                     <div className="breaker"><span>or</span></div>
                     <button className='subButtons' onClick = {() => navigate('/signup')}>Sign Up</button>
-                    <button className='subButtons'><FcGoogle size={18} /></button>
+                    <button className='subButtons' onClick={handleGoogleLogin} ><FcGoogle size={18} /></button>
                 </div>
             </div>
         </div>

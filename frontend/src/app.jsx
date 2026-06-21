@@ -27,7 +27,6 @@ function AppLayout() {
                 </div>
                 <NavLink className='sideLink' to="/signals" onClick={() => setIsOpen(false)}>Signals</NavLink>
                 <NavLink className='sideLink' to="/backtesting" onClick={() => setIsOpen(false)}>BackTest</NavLink>
-                <NavLink className='sideLink' to="/settings" onClick={() => setIsOpen(false)}>Settings</NavLink>
                 <button className='logOut' onClick = {logOut}>Log Out</button>
             </div>
             <Outlet />
