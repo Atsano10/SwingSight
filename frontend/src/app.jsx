@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { BrowserRouter, Routes, Route, NavLink, Outlet, Navigate } from 'react-router-dom'
 import BackTesting from './pages/backTesting.jsx'
 import LiveAnalysis from './pages/liveAnalysis.jsx'
-import Settings from './pages/settings.jsx'
 import LogIn from './pages/login.jsx'
 import SignUp from './pages/signup.jsx'
 import { ProtectedRoute } from './components/protectedRoute.jsx'
@@ -46,7 +45,6 @@ export default function App() {
                 <Route element={<AppLayout />}>
                     <Route path="/signals" element={<ProtectedRoute><LiveAnalysis /></ProtectedRoute>} />
                     <Route path="/backtesting" element={<ProtectedRoute><BackTesting /></ProtectedRoute>} />
-                    <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                 </Route>
             </Routes>
         </BrowserRouter>
