@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { BrowserRouter, Routes, Route, NavLink, Outlet, Navigate } from 'react-router-dom'
 import BackTesting from './pages/backTesting.jsx'
 import LiveAnalysis from './pages/liveAnalysis.jsx'
-import LogIn from './pages/login.jsx'
-import SignUp from './pages/signup.jsx'
-import { ProtectedRoute } from './components/protectedRoute.jsx'
-import { useAuth } from './context/authContext.jsx'
+import LogIn from './pages/Login.jsx'
+import SignUp from './pages/Signup.jsx'
+import { ProtectedRoute } from './components/ProtectedRoute.jsx'
+import { useAuth } from './context/AuthContext.jsx'
 
 function AppLayout() {
     const [isOpen, setIsOpen] = useState(false)
