@@ -4,6 +4,7 @@ import BackTesting from './pages/backTesting.jsx'
 import LiveAnalysis from './pages/liveAnalysis.jsx'
 import Settings from './pages/settings.jsx'
 import LogIn from './pages/login.jsx'
+import SignUp from './pages/signup.jsx'
 
 function AppLayout() {
     const [isOpen, setIsOpen] = useState(false)
