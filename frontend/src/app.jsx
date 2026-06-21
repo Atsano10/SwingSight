@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route, NavLink, Outlet } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, NavLink, Outlet, Navigate } from 'react-router-dom'
 import BackTesting from './pages/backTesting.jsx'
 import LiveAnalysis from './pages/liveAnalysis.jsx'
 import Settings from './pages/settings.jsx'
@@ -40,6 +40,7 @@ export default function App() {
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="/" element={<Navigate to="/login" />} />
                 <Route path="/login" element={<LogIn />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route element={<AppLayout />}>
