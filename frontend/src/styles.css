@@ -565,6 +565,15 @@ main {
     color: white;
     font-weight: 500;
 }
+
+.Win{
+    color: green;
+}
+
+.Loss{
+    color: red;
+}
+
 .tabBar {
     display: flex;
     margin-bottom: 12px;

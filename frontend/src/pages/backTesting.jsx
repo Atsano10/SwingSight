@@ -92,8 +92,8 @@ export default function BackTesting(){
                                 <span className='analysisValue'>${trade.exitPrice}</span>
                             </div>
                             <div className='analysisField'>
-                                <span className='analysisLabel'>Outcome</span>
-                                <span className='analysisValue'>{trade.outcome}</span>
+                                <span className='analysisLabel'>Outcome</span> 
+                                <span className={trade.outcome === 'WIN' ? 'analysisValue Win' : 'analysisValue Loss'}>{trade.outcome}</span>
                             </div>
                             <div className='analysisField'>
                                 <span className='analysisLabel'>P&L</span>
