@@ -1,105 +1,45 @@
+import { useState, useEffect } from 'react'
+
 export default function Table(){
+    const [signals, setSignals] = useState([])
+
+    useEffect(() => {
+        fetch('http://localhost:8000/api/scans') // swing-sight-five.vercel.app
+            .then(res => res.json())
+            .then(data => setSignals(data))
+        // starts empty and fills it up (Fetches -> JSON -> Stores)
+    }, [])
+
+
     return(
         <>
-            <div className='signal'>
-                <div className='signalTicker'>NOK</div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Entry</span>
-                    <span className='signalValue'>13.83</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Stop</span>
-                    <span className='signalValue'>13.18</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Target</span>
-                    <span className='signalValue'>15.13</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Shares</span>
-                    <span className='signalValue'>153.85</span>
-                </div>
-            </div>
-
-            <div className='signal'>
-                <div className='signalTicker'>NOK</div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Entry</span>
-                    <span className='signalValue'>13.83</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Stop</span>
-                    <span className='signalValue'>13.18</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Target</span>
-                    <span className='signalValue'>15.13</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Shares</span>
-                    <span className='signalValue'>153.85</span>
-                </div>
-            </div>
-
-            <div className='signal'>
-                <div className='signalTicker'>NOK</div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Entry</span>
-                    <span className='signalValue'>13.83</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Stop</span>
-                    <span className='signalValue'>13.18</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Target</span>
-                    <span className='signalValue'>15.13</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Shares</span>
-                    <span className='signalValue'>153.85</span>
-                </div>
-            </div>
-
-            <div className='signal'>
-                <div className='signalTicker'>NOK</div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Entry</span>
-                    <span className='signalValue'>13.83</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Stop</span>
-                    <span className='signalValue'>13.18</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Target</span>
-                    <span className='signalValue'>15.13</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Shares</span>
-                    <span className='signalValue'>153.85</span>
-                </div>
-            </div>
-            
-            <div className='signal'>
-                <div className='signalTicker'>NOK</div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Entry</span>
-                    <span className='signalValue'>13.83</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Stop</span>
-                    <span className='signalValue'>13.18</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Target</span>
-                    <span className='signalValue'>15.13</span>
-                </div>
-                <div className='signalField'>
-                    <span className='signalLabel'>Shares</span>
-                    <span className='signalValue'>153.85</span>
-                </div>
-            </div>
+            {signals.length === 0 ? (
+                <p>No Trades Found Today</p> // Checks for empty list (TODO: FIX STYLES)
+            ) : (
+                signals.map(signal => (
+                    <div className='signal' key={signal.ticker}>
+                        <div className='signalTicker'>
+                            {signal.ticker}
+                        </div>
+                        <div className='signalField'>
+                            <span className='signalLabel'>Entry</span>
+                            <span className='signalValue'>{signal.entry}</span>
+                        </div>
+                        <div className='signalField'>
+                            <span className='signalLabel'>Stop</span>
+                            <span className='signalValue'>{signal.stop}</span>
+                        </div>
+                        <div className='signalField'>
+                            <span className='signalLabel'>Target</span>
+                            <span className='signalValue'>{signal.target}</span>
+                        </div>
+                        <div className='signalField'>
+                            <span className='signalLabel'>Shares</span>
+                            <span className='signalValue'>{signal.shares}</span>
+                        </div>
+                    </div>
+                ))
+            )}
         </>
     )
 }
