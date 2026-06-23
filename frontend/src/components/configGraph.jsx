@@ -5,7 +5,7 @@ export default function Graph(){
         {name: 'Start', balance: 2000},
         {name: 'End', balance: 2000},
     ]
-
+    /* TODO: Fix Styles*/
     return(
         <div className= 'portfolioContainer'> 
         <ResponsiveContainer width="95%" height="95%">
