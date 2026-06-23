@@ -4,7 +4,7 @@ export default function Table(){
     const [signals, setSignals] = useState([])
 
     useEffect(() => {
-        fetch('http://localhost:8000/api/scans') // replace swing-sight-five.vercel.app
+        fetch(`${import.meta.env.VITE_API_URL}/api/scans`)
             .then(res => res.json())
             .then(data => setSignals(data))
         // starts empty and fills it up (Fetches -> JSON -> Stores)

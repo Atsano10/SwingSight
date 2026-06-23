@@ -6,10 +6,10 @@ export default function BackTesting(){
     const [activeTab, setActiveTab] = useState('backtests')
 
     useEffect(() => {
-        fetch('http://localhost:8000/api/backtests')
+        fetch(`${import.meta.env.VITE_API_URL}/api/backtests`)
             .then(res => res.json())
             .then(data => setAnalysis(data))
-        fetch('http://localhost:8000/api/scans')
+        fetch(`${import.meta.env.VITE_API_URL}/api/scans`)
             .then(res => res.json())
             .then(data => setSignals(data))
     }, [])
