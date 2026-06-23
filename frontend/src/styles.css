@@ -216,13 +216,42 @@ main {
 
 .portfolioContainer {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     background-color: #1a1a2e;
     flex: 1;
     border: 1px solid #3a3a5c;
     border-radius: 20px;
     color: #a0a0c0;
+    padding: 10px;
+}
+
+.graphHeader {
+    padding: 16px 24px 12px 24px;
+}
+
+.graphLabel {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.graphBalance {
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+}
+
+.noSignals {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+    letter-spacing: 0.5px;
 }
 
 .signalsContainer {
@@ -472,4 +501,125 @@ main {
     border-color: rgba(255, 255, 255, 0.35);
     color: white;
     background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* BackTesting Styles */
+
+.summary {
+    display: flex;
+    gap: 12px;
+    margin: 20px 20px 0px 20px;
+}
+
+.summaryCard {
+    flex: 1;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.totalTrades { background-color: #1e1e3a; border: 1px solid #3a3a5c; }
+.wins        { background-color: #0f2a1a; border: 1px solid #1a5c35; }
+.losses      { background-color: #2a0f0f; border: 1px solid #5c1a1a; }
+.pnl         { background-color: #1a1a0f; border: 1px solid #5c5a1a; }
+
+.summaryLabel {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summaryValue {
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+}
+
+.analysisField{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.analysisTicker{
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    min-width: 48px;
+}
+
+.analysisLabel{
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.analysisValue{
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
+}
+.tabBar {
+    display: flex;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #3a3a5c;
+}
+
+.tabButton {
+    flex: 1;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.tabButton:hover {
+    color: white;
+}
+
+.tabActive {
+    color: white;
+    border-bottom: 2px solid rgba(180, 130, 255, 0.8);
+}
+
+.noData {
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    padding: 40px;
+}
+
+.analysisContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px;
+    padding: 16px 20px;
+    background-color: #1a1a2e;
+    border: 1px solid #3a3a5c;
+    border-radius: 12px;
+    overflow-y: auto;
+}
+
+.analysis{
+    background-color: #252540;
+    border: 1px solid #3a3a5c;
+    padding: 16px 20px;
+    border-radius: 12px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 100%;
 }

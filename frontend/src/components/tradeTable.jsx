@@ -4,7 +4,7 @@ export default function Table(){
     const [signals, setSignals] = useState([])
 
     useEffect(() => {
-        fetch('http://localhost:8000/api/scans') // swing-sight-five.vercel.app
+        fetch('http://localhost:8000/api/scans') // replace swing-sight-five.vercel.app
             .then(res => res.json())
             .then(data => setSignals(data))
         // starts empty and fills it up (Fetches -> JSON -> Stores)
@@ -14,7 +14,7 @@ export default function Table(){
     return(
         <>
             {signals.length === 0 ? (
-                <p>No Trades Found Today</p> // Checks for empty list (TODO: FIX STYLES)
+                <div className='noSignals'>No trade signals found today</div>
             ) : (
                 signals.map(signal => (
                     <div className='signal' key={signal.ticker}>
