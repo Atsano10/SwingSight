@@ -36,6 +36,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from scanner import run_scan
 from backtest import run_backtest
 from pydantic import BaseModel
+from apscheduler.schedulers.background import BackgroundScheduler
 
 config = {
     "accountBalance": 2000,
@@ -64,6 +65,8 @@ class ConfigUpdate(BaseModel):
     minRewardRisk: float
     maxOpenTrades: int
     pullbackDays: int
+    maShort: int = 50
+    maLong: int = 200
 
 class BalanceEntry(BaseModel):
     balance: float
@@ -80,7 +83,20 @@ app.add_middleware(
 
 @app.get("/api/scans")
 def get_scans():
-    return run_scan(config)
+    signals = run_scan(config)
+    if signals:
+        date = datetime.date.today().isoformat()
+        save_scan_results(signals, date)
+    return signals
+
+@app.get("/api/scan-results")
+def get_scan_results():
+    conn = sqlite3.connect(DB_PATH)
+    rows = conn.execute(
+        "SELECT date, ticker, entry, stop, target, shares FROM scan_results ORDER BY date DESC, id ASC"
+    ).fetchall()
+    conn.close()
+    return [{"date": r[0], "ticker": r[1], "entry": r[2], "stop": r[3], "target": r[4], "shares": r[5]} for r in rows]
 
 
 @app.get("/api/backtests")
@@ -115,6 +131,46 @@ def init_balance_table():
     conn.close()
 
 init_balance_table()
+
+def init_scan_results_table():
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS scan_results (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT,
+            ticker TEXT,
+            entry REAL,
+            stop REAL,
+            target REAL,
+            shares REAL
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+init_scan_results_table()
+
+def save_scan_results(signals, date):
+    conn = sqlite3.connect(DB_PATH)
+    existing = conn.execute("SELECT COUNT(*) FROM scan_results WHERE date = ?", (date,)).fetchone()[0]
+    if existing == 0:
+        for s in signals:
+            conn.execute(
+                "INSERT INTO scan_results (date, ticker, entry, stop, target, shares) VALUES (?, ?, ?, ?, ?, ?)",
+                (date, s["ticker"], s["entry"], s["stop"], s["target"], s["shares"])
+            )
+        conn.commit()
+    conn.close()
+
+def scheduled_scan():
+    date = datetime.date.today().isoformat()
+    signals = run_scan(config)
+    if signals:
+        save_scan_results(signals, date)
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(scheduled_scan, 'cron', day_of_week='mon,wed', hour=16, minute=0)
+scheduler.start()
 
 @app.get("/api/balance")
 def get_balance():

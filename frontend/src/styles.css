@@ -729,6 +729,16 @@ main {
     padding: 40px;
 }
 
+.scanDateHeader {
+    color: #b482ff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 12px 4px 6px;
+    border-bottom: 1px solid rgba(180, 130, 255, 0.2);
+    margin-bottom: 4px;
+}
+
 .analysisContainer{
     display: flex;
     flex-direction: column;
