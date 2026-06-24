@@ -225,6 +225,13 @@ main {
     padding: 10px;
     position: relative;
     overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.portfolioContainer:hover {
+    border-color: rgba(180, 130, 255, 0.6);
+    box-shadow: 0 0 20px rgba(180, 130, 255, 0.15);
 }
 
 /* Settings Modal */

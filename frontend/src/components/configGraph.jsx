@@ -62,6 +62,7 @@ export default function Graph(){
                     <Tooltip
                         contentStyle={{ backgroundColor: '#1a1a2e', border: '1px solid #3a3a5c', borderRadius: '8px', color: 'white' }}
                         formatter={(value) => [`$${value}`, 'Balance']}
+                        labelFormatter={(label, payload) => payload?.[0]?.payload?.date ?? label}
                     />
                     <Line
                         dataKey="balance"
