@@ -10,7 +10,9 @@ export default function Graph(){
         riskPerTrade: 0.05,
         minRewardRisk: 2.0,
         maxOpenTrades: 5,
-        pullbackDays: 7
+        pullbackDays: 7,
+        maShort: 20,
+        maLong: 50
     })
 
     const saveConfig = () => {
@@ -27,7 +29,10 @@ export default function Graph(){
                 body: JSON.stringify({ balance: config.accountBalance })
             })
             .then(res => res.json())
-            .then(entry => setBalanceHistory(prev => [...prev, entry]))
+            .then(entry => {
+                setBalanceHistory(prev => [...prev, entry])
+                setSettings(false)
+            })
         })
     }
 
@@ -47,6 +52,9 @@ export default function Graph(){
                 <div className='graphLabel'>Account Balance</div>
                 <div className='graphBalance'>${config.accountBalance}</div>
             </div>
+            {balanceHistory.length === 0 ? (
+                <div className='graphEmpty'>No balance history yet</div>
+            ) : (
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={balanceHistory} margin={{ top: 20, right: 90, bottom: 20, left: 10 }}>
                     <YAxis
@@ -72,6 +80,7 @@ export default function Graph(){
                     />
                 </LineChart>
             </ResponsiveContainer>
+            )}
             {settings && (
                 <div className='modalOverlay' onClick={() => setSettings(false)}>
                     <div className='modal' onClick={(e) => e.stopPropagation()}>
@@ -115,6 +124,22 @@ export default function Graph(){
                                     type="number"
                                     value={config.pullbackDays}
                                     onChange={(e) => setConfig({...config, pullbackDays: e.target.value})}
+                                />
+                            </div>
+                            <div className='modalField'>
+                                <label>MA Short</label>
+                                <input
+                                    type="number"
+                                    value={config.maShort}
+                                    onChange={(e) => setConfig({...config, maShort: e.target.value})}
+                                />
+                            </div>
+                            <div className='modalField'>
+                                <label>MA Long</label>
+                                <input
+                                    type="number"
+                                    value={config.maLong}
+                                    onChange={(e) => setConfig({...config, maLong: e.target.value})}
                                 />
                             </div>
                         </div>

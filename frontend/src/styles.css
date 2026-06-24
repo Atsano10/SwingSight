@@ -267,7 +267,8 @@ main {
 }
 
 .modalFields {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
     flex: 1;
 }
@@ -310,6 +311,7 @@ main {
     display: flex;
     gap: 10px;
     justify-content: flex-end;
+    margin-top: -16px;
 }
 
 .modalClose {
