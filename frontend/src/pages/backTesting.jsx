@@ -1,24 +1,19 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from 'react'
 
 export default function BackTesting(){
     const [analysis, setAnalysis] = useState([])
-    const [signals, setSignals] = useState([])
     const [activeTab, setActiveTab] = useState('backtests')
 
     useEffect(() => {
         fetch(`${import.meta.env.VITE_API_URL}/api/backtests`)
             .then(res => res.json())
             .then(data => setAnalysis(data))
-        fetch(`${import.meta.env.VITE_API_URL}/api/scans`)
-            .then(res => res.json())
-            .then(data => setSignals(data))
     }, [])
 
-    const data = activeTab === 'backtests' ? analysis : signals // decides on which list to note on based on the tab
-    const totalTrades = data.length // counts items
-    const wins = data.filter(t => t.outcome === 'WIN').length // filters for only 'WIN', then counts
-    const losses = data.filter(t => t.outcome === 'LOSS').length // filters for only 'LOSS', then counts
-    const totalPL = data.reduce((sum, t) => sum + (t.profitLoss || 0), 0).toFixed(2) //Adds all the profit losses and rounds
+    const totalTrades = analysis.length
+    const wins = analysis.filter(t => t.outcome === 'WIN').length
+    const losses = analysis.filter(t => t.outcome === 'LOSS').length
+    const totalPL = analysis.reduce((sum, t) => sum + (t.profitLoss || 0), 0).toFixed(2)
 
     return(
         <main>
@@ -57,80 +52,52 @@ export default function BackTesting(){
                     </button>
                 </div>
 
-                {activeTab === 'backtests' ? (
-                    analysis.map(trade => (
-                        <div className='analysis' key={trade.ticker + trade.entryDate}>
-                            <div className='analysisField'>
-                                <span className='analysisTicker'>{trade.ticker}</span>
-                            </div>
-                            <div className='analysisField'>
-                                <span className='analysisLabel'>Entry Date</span>
-                                <span className='analysisValue'>{trade.entryDate}</span>
-                            </div>
-                            <div className='analysisField'>
-                                <span className='analysisLabel'>Entry</span>
-                                <span className='analysisValue'>${trade.entry}</span>
-                            </div>
-                            <div className='analysisField'>
-                                <span className='analysisLabel'>Stop</span>
-                                <span className='analysisValue'>${trade.stop}</span>
-                            </div>
-                            <div className='analysisField'>
-                                <span className='analysisLabel'>Target</span>
-                                <span className='analysisValue'>${trade.target}</span>
-                            </div>
-                            <div className='analysisField'>
-                                <span className='analysisLabel'>Shares</span>
-                                <span className='analysisValue'>{trade.shares}</span>
-                            </div>
-                            <div className='analysisField'>
-                                <span className='analysisLabel'>Exit Date</span>
-                                <span className='analysisValue'>{trade.exitDate}</span>
-                            </div>
-                            <div className='analysisField'>
-                                <span className='analysisLabel'>Exit Price</span>
-                                <span className='analysisValue'>${trade.exitPrice}</span>
-                            </div>
-                            <div className='analysisField'>
-                                <span className='analysisLabel'>Outcome</span> 
-                                <span className={trade.outcome === 'WIN' ? 'analysisValue Win' : 'analysisValue Loss'}>{trade.outcome}</span>
-                            </div>
-                            <div className='analysisField'>
-                                <span className='analysisLabel'>P&L</span>
-                                <span className='analysisValue'>${trade.profitLoss}</span>
-                            </div>
+                {activeTab === 'live' ? (
+                    <p className='noData'>Live results coming soon</p>
+                ) : analysis.map(trade => (
+                    <div className='analysis' key={trade.ticker + trade.entryDate}>
+                        <div className='analysisField'>
+                            <span className='analysisTicker'>{trade.ticker}</span>
                         </div>
-                    ))
-                ) : (
-                    signals.length === 0 ? (
-                        <p className='noData'>No live signals today</p>
-                    ) : (
-                        signals.map(signal => (
-                            <div className='analysis' key={signal.ticker}>
-                                <div className='analysisField'>
-                                    <span className='analysisTicker'>{signal.ticker}</span>
-                                </div>
-                                <div className='analysisField'>
-                                    <span className='analysisLabel'>Entry</span>
-                                    <span className='analysisValue'>${signal.entry}</span>
-                                </div>
-                                <div className='analysisField'>
-                                    <span className='analysisLabel'>Stop</span>
-                                    <span className='analysisValue'>${signal.stop}</span>
-                                </div>
-                                <div className='analysisField'>
-                                    <span className='analysisLabel'>Target</span>
-                                    <span className='analysisValue'>${signal.target}</span>
-                                </div>
-                                <div className='analysisField'>
-                                    <span className='analysisLabel'>Shares</span>
-                                    <span className='analysisValue'>{signal.shares}</span>
-                                </div>
-                            </div>
-                        ))
-                    )
-                )}
-            </div>
+                        <div className='analysisField'>
+                            <span className='analysisLabel'>Entry Date</span>
+                            <span className='analysisValue'>{trade.entryDate}</span>
+                        </div>
+                        <div className='analysisField'>
+                            <span className='analysisLabel'>Entry</span>
+                            <span className='analysisValue'>${trade.entry}</span>
+                        </div>
+                        <div className='analysisField'>
+                            <span className='analysisLabel'>Stop</span>
+                            <span className='analysisValue'>${trade.stop}</span>
+                        </div>
+                        <div className='analysisField'>
+                            <span className='analysisLabel'>Target</span>
+                            <span className='analysisValue'>${trade.target}</span>
+                        </div>
+                        <div className='analysisField'>
+                            <span className='analysisLabel'>Shares</span>
+                            <span className='analysisValue'>{trade.shares}</span>
+                        </div>
+                        <div className='analysisField'>
+                            <span className='analysisLabel'>Exit Date</span>
+                            <span className='analysisValue'>{trade.exitDate}</span>
+                        </div>
+                        <div className='analysisField'>
+                            <span className='analysisLabel'>Exit Price</span>
+                            <span className='analysisValue'>${trade.exitPrice}</span>
+                        </div>
+                        <div className='analysisField'>
+                            <span className='analysisLabel'>Outcome</span>
+                            <span className={trade.outcome === 'WIN' ? 'analysisValue Win' : 'analysisValue Loss'}>{trade.outcome}</span>
+                        </div>
+                        <div className='analysisField'>
+                            <span className='analysisLabel'>P&L</span>
+                            <span className='analysisValue'>${trade.profitLoss}</span>
+                        </div>
+                    </div>
+                ))}
+                </div>
         </main>
     )
 }
