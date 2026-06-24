@@ -1,21 +1,21 @@
 import { LineChart, Line, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function Graph(){
-    const data = [
-        {name: 'Start', balance: 2000},
-        {name: 'Current', balance: 2000},
-    ]
-
     const [settings, setSettings] = useState(false)
 
     const [config, setConfig] = useState({
-        accountBalance: 2000,       
-        riskPerTrade: 0.05,     
-        minRewardRisk: 2.0,     
-        maxOpenTrades: 5,              
-        pullbackDays: 7         
+        accountBalance: 2000,
+        riskPerTrade: 0.05,
+        minRewardRisk: 2.0,
+        maxOpenTrades: 5,
+        pullbackDays: 7
     })
+
+    const data = [
+        {name: 'Start', balance: config.accountBalance},
+        {name: 'Current', balance: config.accountBalance},
+    ]
 
     const saveConfig = () => {
         fetch(`${import.meta.env.VITE_API_URL}/api/config`, {
@@ -27,11 +27,17 @@ export default function Graph(){
         .then(data => console.log('saved', data))
     }
 
+    useEffect(() => {
+        fetch(`${import.meta.env.VITE_API_URL}/api/config`)
+            .then(res => res.json())
+            .then(data => setConfig(data))
+    }, [])
+
     return(
         <div className='portfolioContainer' onClick={() => setSettings(true)}>
             <div className='graphHeader'>
                 <div className='graphLabel'>Account Balance</div>
-                <div className='graphBalance'>$2,000.00</div>
+                <div className='graphBalance'>${config.accountBalance}</div>
             </div>
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data} margin={{ top: 20, right: 90, bottom: 20, left: 10 }}>

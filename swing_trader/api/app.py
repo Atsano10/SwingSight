@@ -14,6 +14,16 @@ config = {
     "minRewardRisk": 2.0,
     "maxOpenTrades": 5,
     "pullbackDays": 7,
+    "maShort": 50,
+    "maLong": 200,
+
+    "watchlist": [
+        "AAPL", "MSFT", "GOOGL", "AMZN", "META",
+        "NVDA", "AMD", "XOM", "CVX", "TSLA",
+        "DIS", "NFLX","SPY", "COST", "QBTS",
+        "SNDK", "AVGO","SNOW", "TSM", "NOK",
+        "VST",
+    ]
 }
 
 class ConfigUpdate(BaseModel):
@@ -35,7 +45,7 @@ app.add_middleware(
 
 @app.get("/api/scans")
 def get_scans():
-    return run_scan()
+    return run_scan(config)
 
 
 @app.get("/api/backtests")
