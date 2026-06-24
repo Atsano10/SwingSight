@@ -4,10 +4,12 @@ export default function Table(){
     const [signals, setSignals] = useState([])
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_URL}/api/scans`)
+        fetch(`${import.meta.env.VITE_API_URL}/api/scan-results`)
             .then(res => res.json())
-            .then(data => setSignals(data))
-        // starts empty and fills it up (Fetches -> JSON -> Stores)
+            .then(data => {
+                const today = new Date().toISOString().split('T')[0]
+                setSignals(data.filter(s => s.date === today))
+            })
     }, [])
 
 
