@@ -35,6 +35,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from scanner import run_scan
 from backtest import run_backtest
+from resolver import resolve_scan_results
 from pydantic import BaseModel
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -93,10 +94,22 @@ def get_scans():
 def get_scan_results():
     conn = sqlite3.connect(DB_PATH)
     rows = conn.execute(
-        "SELECT date, ticker, entry, stop, target, shares FROM scan_results ORDER BY date DESC, id ASC"
+        "SELECT date, ticker, entry, stop, target, shares, outcome, profit_loss, exit_date, exit_price FROM scan_results ORDER BY date DESC, id ASC"
     ).fetchall()
     conn.close()
-    return [{"date": r[0], "ticker": r[1], "entry": r[2], "stop": r[3], "target": r[4], "shares": r[5]} for r in rows]
+    return [
+        {
+            "date": r[0], "ticker": r[1], "entry": r[2], "stop": r[3],
+            "target": r[4], "shares": r[5], "outcome": r[6],
+            "profitLoss": r[7], "exitDate": r[8], "exitPrice": r[9]
+        }
+        for r in rows
+    ]
+
+@app.post("/api/resolve")
+def trigger_resolve():
+    resolve_scan_results(DB_PATH)
+    return {"status": "done"}
 
 
 @app.get("/api/backtests")
@@ -142,9 +155,18 @@ def init_scan_results_table():
             entry REAL,
             stop REAL,
             target REAL,
-            shares REAL
+            shares REAL,
+            outcome TEXT,
+            profit_loss REAL,
+            exit_date TEXT,
+            exit_price REAL
         )
     """)
+    for col, col_type in [("outcome", "TEXT"), ("profit_loss", "REAL"), ("exit_date", "TEXT"), ("exit_price", "REAL")]:
+        try:
+            conn.execute(f"ALTER TABLE scan_results ADD COLUMN {col} {col_type}")
+        except Exception:
+            pass
     conn.commit()
     conn.close()
 
@@ -170,6 +192,7 @@ def scheduled_scan():
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(scheduled_scan, 'cron', day_of_week='mon,wed', hour=16, minute=0)
+scheduler.add_job(resolve_scan_results, 'cron', hour=17, minute=0, args=[DB_PATH])
 scheduler.start()
 
 @app.get("/api/balance")

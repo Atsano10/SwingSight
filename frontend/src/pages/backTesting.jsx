@@ -94,7 +94,9 @@ export default function BackTesting(){
                                         </div>
                                         <div className='analysisField'>
                                             <span className='analysisLabel'>P&L</span>
-                                            <span className='analysisValue'>Pending</span>
+                                            <span className={signal.outcome === 'WIN' ? 'analysisValue Win' : signal.outcome === 'LOSS' ? 'analysisValue Loss' : 'analysisValue'}>
+                                                {signal.outcome ? `$${signal.profitLoss}` : 'Pending'}
+                                            </span>
                                         </div>
                                     </div>
                                 ))}
