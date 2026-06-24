@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 
 export default function Graph(){
     const [settings, setSettings] = useState(false)
+    const [balanceHistory, setBalanceHistory] = useState([])
 
     const [config, setConfig] = useState({
         accountBalance: 2000,
@@ -12,11 +13,6 @@ export default function Graph(){
         pullbackDays: 7
     })
 
-    const data = [
-        {name: 'Start', balance: config.accountBalance},
-        {name: 'Current', balance: config.accountBalance},
-    ]
-
     const saveConfig = () => {
         fetch(`${import.meta.env.VITE_API_URL}/api/config`, {
             method: 'POST',
@@ -24,13 +20,25 @@ export default function Graph(){
             body: JSON.stringify(config)
         })
         .then(res => res.json())
-        .then(data => console.log('saved', data))
+        .then(() => {
+            fetch(`${import.meta.env.VITE_API_URL}/api/balance`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ balance: config.accountBalance })
+            })
+            .then(res => res.json())
+            .then(entry => setBalanceHistory(prev => [...prev, entry]))
+        })
     }
 
     useEffect(() => {
         fetch(`${import.meta.env.VITE_API_URL}/api/config`)
             .then(res => res.json())
             .then(data => setConfig(data))
+
+        fetch(`${import.meta.env.VITE_API_URL}/api/balance`)
+            .then(res => res.json())
+            .then(data => setBalanceHistory(data))
     }, [])
 
     return(
@@ -40,10 +48,10 @@ export default function Graph(){
                 <div className='graphBalance'>${config.accountBalance}</div>
             </div>
             <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={data} margin={{ top: 20, right: 90, bottom: 20, left: 10 }}>
+                <LineChart data={balanceHistory} margin={{ top: 20, right: 90, bottom: 20, left: 10 }}>
                     <YAxis
                         orientation="right"
-                        domain={[1800, 2200]}
+                        domain={['auto', 'auto']}
                         tickCount={3}
                         axisLine={false}
                         tickLine={false}
@@ -66,43 +74,56 @@ export default function Graph(){
             {settings && (
                 <div className='modalOverlay' onClick={() => setSettings(false)}>
                     <div className='modal' onClick={(e) => e.stopPropagation()}>
-                        <div>
-                            <label>Risk Per Trade</label>
-                            <input
-                                type="number"
-                                value={config.riskPerTrade}
-                                onChange={(e) => setConfig({...config, riskPerTrade: e.target.value})}
-                            />
-                            <label>Account Balance</label>
-                            <input
-                                type="number"
-                                value={config.accountBalance}
-                                onChange={(e) => setConfig({...config, accountBalance: e.target.value})}
-                            />
-                            <label>Reward/Risk Ratio</label>
-                            <input
-                                type="number"
-                                value={config.minRewardRisk}
-                                onChange={(e) => setConfig({...config, minRewardRisk: e.target.value})}
-                            />
-                            <label>Max Open Trades</label>
-                            <input
-                                type="number"
-                                value={config.maxOpenTrades}
-                                onChange={(e) => setConfig({...config, maxOpenTrades: e.target.value})}
-                            />
-                            <label>Pullback Days</label>
-                            <input
-                                type="number"
-                                value={config.pullbackDays}
-                                onChange={(e) => setConfig({...config, pullbackDays: e.target.value})}
-                            />
+                        <div className='modalTitle'>Graph Config Settings</div>
+                        <div className='modalFields'>
+                            <div className='modalField'>
+                                <label>Balance</label>
+                                <input
+                                    type="number"
+                                    value={config.accountBalance}
+                                    onChange={(e) => setConfig({...config, accountBalance: e.target.value})}
+                                />
+                            </div>
+                            <div className='modalField'>
+                                <label>Risk / Trade</label>
+                                <input
+                                    type="number"
+                                    value={config.riskPerTrade}
+                                    onChange={(e) => setConfig({...config, riskPerTrade: e.target.value})}
+                                />
+                            </div>
+                            <div className='modalField'>
+                                <label>Reward / Risk</label>
+                                <input
+                                    type="number"
+                                    value={config.minRewardRisk}
+                                    onChange={(e) => setConfig({...config, minRewardRisk: e.target.value})}
+                                />
+                            </div>
+                            <div className='modalField'>
+                                <label>Max Trades</label>
+                                <input
+                                    type="number"
+                                    value={config.maxOpenTrades}
+                                    onChange={(e) => setConfig({...config, maxOpenTrades: e.target.value})}
+                                />
+                            </div>
+                            <div className='modalField'>
+                                <label>Pullback Days</label>
+                                <input
+                                    type="number"
+                                    value={config.pullbackDays}
+                                    onChange={(e) => setConfig({...config, pullbackDays: e.target.value})}
+                                />
+                            </div>
                         </div>
-                        <button onClick={() => setSettings(false)}>Close</button>
-                        <button onClick={saveConfig}>Save</button>
+                        <div className='modalButtons'>
+                            <button className='modalClose' onClick={() => setSettings(false)}>Cancel</button>
+                            <button className='modalSave' onClick={saveConfig}>Save</button>
+                        </div>
                     </div>
                 </div>
-)}
+            )}
         </div>
     )
 }

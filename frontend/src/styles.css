@@ -223,6 +223,118 @@ main {
     border-radius: 20px;
     color: #a0a0c0;
     padding: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Settings Modal */
+
+.modalOverlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(15, 15, 26, 0.92);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.modal {
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+}
+
+.modalTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.modalFields {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+}
+
+.modalField {
+    flex: 1;
+    background-color: #252540;
+    border: 1px solid #3a3a5c;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.modalField label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modalField input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #3a3a5c;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    outline: none;
+    width: 100%;
+    padding: 4px 0;
+}
+
+.modalField input:focus {
+    border-bottom-color: rgba(180, 130, 255, 0.8);
+}
+
+.modalButtons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.modalClose {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 8px 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modalClose:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: white;
+}
+
+.modalSave {
+    background: linear-gradient(135deg, rgb(68, 13, 139), rgb(88, 20, 160));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modalSave:hover {
+    background: linear-gradient(135deg, rgb(80, 18, 158), rgb(102, 28, 185));
 }
 
 .graphHeader {
