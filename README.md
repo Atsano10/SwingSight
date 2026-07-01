@@ -130,3 +130,9 @@ The app will be available at `http://localhost:5173`.
 The watchlist includes 22 large-cap and sector tickers: AAPL, MSFT, GOOGL, AMZN, META, NVDA, AMD, XOM, CVX, TSLA, DIS, NFLX, SPY, COST, QBTS, SNDK, AVGO, SNOW, TSM, NOK, VST.
 
 ---
+
+## License 
+
+MIT
+
+---
