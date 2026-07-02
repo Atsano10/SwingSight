@@ -1,21 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useData } from '../context/dataContext.jsx'
 
 export default function Table(){
-    const [signals, setSignals] = useState([])
-
-    useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_URL}/api/scan-results`)
-            .then(res => res.json())
-            .then(data => {
-                const today = new Date().toISOString().split('T')[0]
-                setSignals(data.filter(s => s.date === today))
-            })
-    }, [])
-
+    const { scanResults, loading } = useData()
+    const today = new Date().toISOString().split('T')[0]
+    const signals = scanResults.filter(s => s.date === today)
 
     return(
         <>
-            {signals.length === 0 ? (
+            {loading ? (
+                <div className='loadingContainer'><div className='spinner' /></div>
+            ) : signals.length === 0 ? (
                 <div className='noSignals'>No trade signals found today</div>
             ) : (
                 signals.map(signal => (

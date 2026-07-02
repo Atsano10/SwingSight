@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 export default function Graph(){
     const [settings, setSettings] = useState(false)
     const [balanceHistory, setBalanceHistory] = useState([])
+    const [loading, setLoading] = useState(true)
 
     const [config, setConfig] = useState({
         accountBalance: 2000,
@@ -16,34 +17,34 @@ export default function Graph(){
     })
 
     const saveConfig = () => {
-        fetch(`${import.meta.env.VITE_API_URL}/api/config`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(config)
-        })
-        .then(res => res.json())
-        .then(() => {
+        Promise.all([
+            fetch(`${import.meta.env.VITE_API_URL}/api/config`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(config)
+            }).then(r => r.json()),
             fetch(`${import.meta.env.VITE_API_URL}/api/balance`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ balance: config.accountBalance })
-            })
-            .then(res => res.json())
-            .then(entry => {
-                setBalanceHistory(prev => [...prev, entry])
-                setSettings(false)
-            })
+            }).then(r => r.json())
+        ]).then(([_, entry]) => {
+            setBalanceHistory(prev => [...prev, entry])
+            setSettings(false)
         })
     }
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_URL}/api/config`)
-            .then(res => res.json())
-            .then(data => setConfig(data))
-
-        fetch(`${import.meta.env.VITE_API_URL}/api/balance`)
-            .then(res => res.json())
-            .then(data => setBalanceHistory(data))
+        Promise.all([
+            fetch(`${import.meta.env.VITE_API_URL}/api/config`).then(r => r.json()),
+            fetch(`${import.meta.env.VITE_API_URL}/api/balance`).then(r => r.json())
+        ])
+            .then(([configData, balanceData]) => {
+                setConfig(configData)
+                setBalanceHistory(balanceData)
+            })
+            .catch(() => {})
+            .finally(() => setLoading(false))
     }, [])
 
     return(
@@ -52,7 +53,9 @@ export default function Graph(){
                 <div className='graphLabel'>Account Balance</div>
                 <div className='graphBalance'>${config.accountBalance}</div>
             </div>
-            {balanceHistory.length === 0 ? (
+            {loading ? (
+                <div className='loadingContainer'><div className='spinner' /></div>
+            ) : balanceHistory.length === 0 ? (
                 <div className='graphEmpty'>No balance history yet</div>
             ) : (
             <ResponsiveContainer width="100%" height="100%">

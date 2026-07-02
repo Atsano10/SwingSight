@@ -763,3 +763,26 @@ main {
     box-sizing: border-box;
     width: 100%;
 }
+
+/* Loading Spinner */
+
+.loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+.spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid rgba(180, 130, 255, 0.2);
+    border-top-color: #b482ff;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

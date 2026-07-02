@@ -1,18 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { useData } from '../context/dataContext.jsx'
 
 export default function BackTesting(){
-    const [analysis, setAnalysis] = useState([])
-    const [scanResults, setScanResults] = useState([])
+    const { backtests: analysis, scanResults, loading } = useData()
     const [activeTab, setActiveTab] = useState('backtests')
-
-    useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_URL}/api/backtests`)
-            .then(res => res.json())
-            .then(data => setAnalysis(data))
-        fetch(`${import.meta.env.VITE_API_URL}/api/scan-results`)
-            .then(res => res.json())
-            .then(data => setScanResults(data))
-    }, [])
 
     const groupedByDate = scanResults.reduce((acc, signal) => {
         if (!acc[signal.date]) acc[signal.date] = []
@@ -64,7 +55,9 @@ export default function BackTesting(){
                     </button>
                 </div>
 
-                {activeTab === 'live' ? (
+                {loading ? (
+                    <div className='loadingContainer'><div className='spinner' /></div>
+                ) : activeTab === 'live' ? (
                     Object.keys(groupedByDate).length === 0 ? (
                         <p className='noData'>No scan results yet</p>
                     ) : (

@@ -8,25 +8,20 @@ export function AuthProvider ({children}){
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        // checks for active session. (logged in)
-        async function getSession(){
-            const { data: {session} } = await supabase.auth.getSession()
-            // if there is a session store the user otherwise null.
+        // getSession is the authoritative restore — sets user AND ends loading
+        supabase.auth.getSession().then(({ data: { session } }) => {
             setUser(session?.user ?? null)
-        }
-        getSession()
-
-        // check for login and logouts
-        const { data : {subscription}} = supabase.auth.onAuthStateChange ( (_event, session) => {
-            setUser(session?.user ?? null)
-            setLoading(false) // done loading
+            setLoading(false)
         })
 
-        //stops checking for more 
-        return () => subscription.unsubscribe()
-    }, []) 
+        // onAuthStateChange only handles subsequent changes (login, logout, token refresh)
+        const { data : {subscription}} = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null)
+        })
 
-    // signs out
+        return () => subscription.unsubscribe()
+    }, [])
+
     async function logOut(){
         await supabase.auth.signOut()
     }
